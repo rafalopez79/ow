@@ -28,6 +28,33 @@
 					</includes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<finalName>ow-${project.version}</finalName>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<manifestEntries>
+										<Main-Class>com.bzsoft.oworld.ui.Launcher</Main-Class>
+										<Version>${project.version}</Version>
+										<Built-By>${built.by}</Built-By>
+									</manifestEntries>	
+								</transformer>
+							</transformers>
+							<minimizeJar>true</minimizeJar>							
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -41,8 +68,12 @@
 			<artifactId>slf4j-simple</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.bzsoft</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>oworld-assets</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>oworld-util</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -12,9 +12,10 @@ public final class AppInfo {
 	private final String fontUrl;
 	private final List<String> i18nUrls;
 	private final List<String> resourceUrls;
+	private final String charsUrl;
 
 	public AppInfo(String appName, String version, List<Locale> locales, String colorUrl, String fontUrl,
-			List<String> i18nUrls, List<String> resourceUrls) {
+			List<String> i18nUrls, List<String> resourceUrls, final String charsUrl) {
 		this.appName = appName;
 		this.version = version;
 		this.locales = locales;
@@ -22,6 +23,7 @@ public final class AppInfo {
 		this.fontUrl = fontUrl;
 		this.i18nUrls = i18nUrls;
 		this.resourceUrls = resourceUrls;
+		this.charsUrl = charsUrl;
 	}
 
 	public String getAppName() {
@@ -52,4 +54,7 @@ public final class AppInfo {
 		return resourceUrls;
 	}
 
+	public String getCharsUrl() {
+		return charsUrl;
+	}
 }

@@ -17,4 +17,8 @@ public interface ResourceManager {
 
 	public void setLocale(Locale locale);
 
+	public void loadCharacterInfo() throws ResourceException;
+
+	public CharacterData getCharacter(int id, String character);
+
 }

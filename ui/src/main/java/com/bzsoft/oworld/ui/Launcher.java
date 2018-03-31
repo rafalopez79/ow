@@ -1,6 +1,7 @@
 package com.bzsoft.oworld.ui;
 
 import java.awt.Color;
+import java.awt.DisplayMode;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -42,6 +43,7 @@ public final class Launcher {
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
 	protected static final long MILLIS = 1000 / 12;
+	protected static final int IMGCACHESIZE = 2048;
 
 	protected final Frame frame;
 	protected final I18nManager i18nManager;
@@ -59,7 +61,7 @@ public final class Launcher {
 		renderingHints = createRenderingHints();
 		drawables = new TreeMap<>();
 		el = new EventLoopImpl(null);
-		resourceManager = new BaseResourceManager();
+		resourceManager = new BaseResourceManager(frame, IMGCACHESIZE);
 		animThread = new Thread(createGameLoop(frame), "AnimationThread");
 	}
 
@@ -70,6 +72,7 @@ public final class Launcher {
 				exit();
 			}
 		});
+		frame.setIconImage(resourceManager.getImage(R.Resources.icon));
 		frame.setIgnoreRepaint(true);
 		frame.setUndecorated(true);
 		i18nManager.addLocaleChangeListener(() -> {
@@ -94,15 +97,31 @@ public final class Launcher {
 		final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		final GraphicsDevice gs = ge.getDefaultScreenDevice();
 		if (gs.isFullScreenSupported()) {
+			final DisplayMode dm = gs.getDisplayMode();
 			try {
 				gs.setFullScreenWindow(frame);
+				final DisplayMode sdm = getPreferredDisplayMode(gs.getDisplayModes(), 1280, 800, 8, 60);
+				gs.setDisplayMode(sdm != null ? sdm : dm);
 				return true;
 			} catch (final Exception e) {
 				gs.setFullScreenWindow(null);
+				gs.setDisplayMode(dm);
 				return false;
 			}
 		}
 		return false;
+	}
+
+	private static final DisplayMode getPreferredDisplayMode(DisplayMode[] dms, int w, int h, int bitDepth, int hz) {
+		DisplayMode selected = null;
+		for (final DisplayMode dm : dms) {
+			if (dm.getHeight() == h && dm.getWidth() == w && dm.getBitDepth() == bitDepth
+					&& dm.getRefreshRate() == hz) {
+				selected = dm;
+				break;
+			}
+		}
+		return selected;
 	}
 
 	protected void exit() {
@@ -184,20 +203,19 @@ public final class Launcher {
 		final UIPanel panel = new UIPanel(el, resourceManager, rect, frame);
 		addDrawable(100, new UIFpsCounter(el));
 		final Thread backgroundLoader = new Thread(() -> {
-			// load images
-			final Image background = resourceManager.getImage(R.Resources.background);
-			panel.setBackground(background);
-			//
-			for (int i = 0; i < 10; i++) {
+			try {
+				// load images
+				final Image background = resourceManager.getImage(R.Resources.background);
+				panel.setBackground(background);
+				//
 				progress.incrProgress(10);
-				try {
-					Thread.sleep(10);
-				} catch (final InterruptedException e) {
-					// empty
-				}
+				resourceManager.loadCharacterInfo();
+				progress.incrProgress(90);
+				removeDrawable(progress);
+				addDrawable(0, panel);
+			} catch (final Exception e) {
+				// TODO: error loading game
 			}
-			removeDrawable(progress);
-			addDrawable(0, panel);
 		});
 		backgroundLoader.start();
 	}

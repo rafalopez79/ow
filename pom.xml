@@ -16,6 +16,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<built.by>BzSoft</built.by>
 	</properties>
 
 	<repositories>
@@ -30,11 +31,23 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.1</version>
+				<version>3.7.0</version>
 				<configuration>
-					<!-- or whatever version you use -->
 					<source>1.8</source>
 					<target>1.8</target>
+					<!--
+					<debug>false</debug>
+					<debuglevel>none</debuglevel>
+					-->
+					<optimize>true</optimize>
+					<fork>true</fork>
+					<compilerArgs>
+					  <arg>-Xlint:all</arg>
+					  <!-- for production -->
+					  <!--
+					  <arg>-g:none</arg>
+					  -->
+					 </compilerArgs> 
 				</configuration>
 			</plugin>
 			<plugin>
@@ -49,17 +62,23 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>			
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
 	<modules>
         <module>ui</module>
+		<module>util</module>
 		<module>ap</module>
-		<module>assets</module>
-		<!--
+		<module>assets</module>	
 		<module>engine</module>
-		-->
 	</modules>
 	
 	<dependencyManagement>
@@ -76,14 +95,24 @@
 			  <scope>test</scope>
 			</dependency>
 			<dependency>
-			  <groupId>com.bzsoft</groupId>
+			  <groupId>${project.groupId}</groupId>
 			  <artifactId>oworld-ap</artifactId>
-			  <version>${version}</version>			  
+			  <version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.bzsoft</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>oworld-assets</artifactId>
-				<version>${version}</version>			  
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>oworld-engine</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>oworld-util</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

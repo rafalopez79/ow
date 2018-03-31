@@ -32,9 +32,9 @@ public class UIProgress extends UIComponent {
 		final Color c = g.getColor();
 		try {
 			g.setColor(Color.white);
-			g.drawRect(rect.x, rect.y, rect.width, rect.height);
+			g.drawRoundRect(rect.x, rect.y, rect.width, rect.height, 10, 10);
 			final int level = (int) (((double) progress * rect.width) / max);
-			g.fillRect(rect.x, rect.y, Math.min(level, rect.width), rect.height);
+			g.fillRoundRect(rect.x, rect.y, Math.min(level, rect.width), rect.height, 10, 10);
 		} finally {
 			g.setColor(c);
 		}

@@ -18,6 +18,7 @@ public final class ResourceUtil {
 	private static final String FONT = "font";
 	private static final String I18N = "i18n";
 	private static final String RESOURCES = "resources";
+	private static final String CHARACTERS = "chars";
 
 	private ResourceUtil() {
 		// empty
@@ -34,12 +35,14 @@ public final class ResourceUtil {
 			final String font = prop.getProperty(FONT);
 			final String resources = prop.getProperty(RESOURCES);
 			final String i18n = prop.getProperty(I18N);
+			final String chars = prop.getProperty(CHARACTERS);
 			final List<Locale> localeList = parseLocales(locales);
 			final String colorUrl = color;
 			final String fontUrl = font;
+			final String charsUrl = chars;
 			final List<String> i18nUrls = parseResource(i18n);
 			final List<String> resourceUrls = parseResource(resources);
-			return new AppInfo(appName, version, localeList, colorUrl, fontUrl, i18nUrls, resourceUrls);
+			return new AppInfo(appName, version, localeList, colorUrl, fontUrl, i18nUrls, resourceUrls, charsUrl);
 		}
 	}
 
@@ -87,8 +90,8 @@ public final class ResourceUtil {
 				final Properties prop = new Properties();
 				prop.load(is);
 				for (final String name : prop.stringPropertyNames()) {
-					final String val = prop.getProperty(name);
-					list.add(new Object[] { name, val, i++ });
+					final String val = prop.getProperty(name).trim();
+					list.add(new Object[] { name.trim(), val, i++ });
 				}
 			}
 		}
