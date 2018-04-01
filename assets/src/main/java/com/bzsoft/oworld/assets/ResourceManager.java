@@ -15,6 +15,8 @@ public interface ResourceManager {
 
 	public Image getImage(int key);
 
+	public Image getCharacterImage(int key);
+
 	public void setLocale(Locale locale);
 
 	public void loadCharacterInfo() throws ResourceException;

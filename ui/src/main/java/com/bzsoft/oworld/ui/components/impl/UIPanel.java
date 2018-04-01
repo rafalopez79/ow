@@ -33,6 +33,7 @@ public class UIPanel extends UIComponent {
 			if (background != null) {
 				g.drawImage(background, 0, 0, o);
 			}
+
 		} finally {
 
 		}

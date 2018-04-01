@@ -36,6 +36,7 @@ import com.bzsoft.oworld.util.tuple.Tuple.Tuple2;
 public class BaseResourceManager implements ResourceManager {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseResourceManager.class);
+	private static final int CHARACTER_IMG_OFFSET = 10000;
 
 	private static final String STATES = "states";
 
@@ -68,7 +69,7 @@ public class BaseResourceManager implements ResourceManager {
 			final String mdFile = R.CharInfo.get(R.CharInfo.characterImgMdFile);
 			final String propFile = R.CharInfo.get(R.CharInfo.characterImgPropFile);
 			final String pattern = "%s_%s_%d";
-			int img = 0;
+			int img = CHARACTER_IMG_OFFSET;
 			final List<String> urls = new ArrayList<>();
 			final Map<String, Map<Status, Map<Integer, CharacterImageDescriptor[]>>> map = new HashMap<>();
 			for (final String character : split(characters)) {
@@ -199,6 +200,22 @@ public class BaseResourceManager implements ResourceManager {
 				url = R.Resources.get(resource);
 				img = loadImage(component, toolkit, url, false);
 				imgCache.put(resource, img);
+			} catch (final Exception e) {
+				LOGGER.warn("Error Loading Image {}", url, e);
+			}
+		}
+		return img;
+	}
+
+	@Override
+	public Image getCharacterImage(int key) {
+		Image img = imgCache.get(key);
+		if (img == null) {
+			String url = null;
+			try {
+				url = cdUrls[key - CHARACTER_IMG_OFFSET];
+				img = loadImage(component, toolkit, url, false);
+				imgCache.put(key, img);
 			} catch (final Exception e) {
 				LOGGER.warn("Error Loading Image {}", url, e);
 			}
